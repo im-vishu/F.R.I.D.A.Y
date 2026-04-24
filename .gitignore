@@ -1,0 +1,106 @@
+Text.md.txt
+Voice.md.txt
+
+
+# --- F.R.I.D.A.Y / Multi-Agent AI Assistant ---
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg*
+*.manifest
+*.spec
+.Python
+env/
+venv/
+ENV/
+env.bak/
+*.sqlite3
+*.db
+.DS_Store
+
+# --- Node.js / JavaScript ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.*
+.next/
+dist/
+coverage/
+.cache/
+*.local
+
+# --- Next.js ---
+.next/
+.vercel/
+out/
+build/
+
+# --- Visual Studio Code / JetBrains ---
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# --- OS Junk ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- MacOS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# --- Model Files / Data / Checkpoints ---
+*.pb
+*.h5
+*.pth
+*.pt
+*.onnx
+*.ckpt
+*.tflite
+# Vosk/Kaldi/Models (DO NOT TRACK, models are large files, download by script/manual)
+backend/voice/stt/vosk-model-*/
+backend/voice/wakeword/vosk-model-*/
+models/
+models/**
+*.zip
+
+# --- Logs / Temp ---
+*.log
+*.tmp
+*.temp
+logs/
+logs/**
+tmp/
+tmp/**
+
+# --- Security / Secret Keys ---
+secrets.*
+*.key
+*.pem
+*.crt
+*.env
+*.env.*
+
+# --- Test Output ---
+.coverage
+pytest_cache/
+*.test.js.snap
+
+# --- Docker ---
+docker-data/
+*.pid
+
+# --- System / Swap ---
+*.swp
+*.swo
+
+# --- Custom ---
+/local_data/
