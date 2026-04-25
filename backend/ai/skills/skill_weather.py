@@ -2,17 +2,21 @@ from backend.ai.agent_base import AgentBase
 
 class WeatherSkill(AgentBase):
     def __init__(self, event_bus):
-        super().__init__("skill_weather", event_bus)
-        self.on_event("planner.plan", self.handle_plan)
+        super().__init__("weather_skill", event_bus)
+        self.on_event("planner.invoke.skill", self.handle_skill_request)
 
-    def handle_plan(self, event):
-        args = event["payload"].get("args", {})
-        # Call weather API or dummy response
-        result = {"result": f"The weather in {args.get('location', 'your city')} is 20°C and sunny."}
-        self.publish("skills.weather.result", result, target=event["origin"])
+    def handle_skill_request(self, event):
+        skill = event["payload"].get("skill")
+        entities = event["payload"].get("entities", {})
+        if skill == "weather":
+            location = entities.get("location", "your location")
+            # Demo: fake forecast
+            result = f"The weather in {location.title()} is sunny and pleasant."
+            print(f"[SkillWeather] Responding for: {location}")
+            self.publish("skills.weather.result", {"result": result})
 
 if __name__ == "__main__":
     from backend.event_bus import EventBus
     bus = EventBus()
-    skill = WeatherSkill(bus)
+    agent = WeatherSkill(bus)
     bus.run_forever()
