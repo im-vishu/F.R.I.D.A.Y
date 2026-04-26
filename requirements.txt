@@ -1,0 +1,20 @@
+# Core dependencies for F.R.I.D.A.Y agent system
+
+# core
+pyttsx3
+requests
+
+# all agents
+python-dotenv
+
+# voice input (STT)
+vosk
+sounddevice
+
+# GUI
+tk
+
+# Optional: for Wikipedia, add "wikipedia"
+wikipedia
+
+# If you use Pillow or other libs in any skills, list them likewise

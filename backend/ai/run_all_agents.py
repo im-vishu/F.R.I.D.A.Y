@@ -11,8 +11,12 @@ from backend.ai.skills.skill_news import NewsSkill
 from backend.ai.skills.skill_code import CodeSkill
 from backend.ai.tts_agent import TTSAgent
 from backend.ai.memory_agent import MemoryAgent
+from backend.ai.gui_agent import GUIAgent
+from backend.ai.speech_agent import SpeechAgent
 
 bus = EventBus()
+
+# Core agents
 nlu = NLUAgent(bus)
 planner = PlannerAgent(bus)
 weather = WeatherSkill(bus)
@@ -26,12 +30,14 @@ code = CodeSkill(bus)
 tts = TTSAgent(bus)
 mem = MemoryAgent(bus)
 
-# Test: "run python code: print(42 * 7)"
-bus.publish_event("stt.result", {
-    "origin": "stt",
-    "type": "stt.result",
-    "payload": {"text": "run python code: print(42 * 7)"},
-    "target": "broadcast"
-})
+# GUI Agent (text/chat window)
+gui = GUIAgent(bus)
+gui.start_mainloop()
+
+# Speech Agent (microphone input; requires Vosk and model)
+speech = SpeechAgent(bus)            # You can comment this out if you want text-only
+speech.start_listen_thread()         # Comment out to disable live STT
+
+print("[F.R.I.D.A.Y] System ready. Use GUI, type, or speak your requests!")
 
 bus.run_forever()
