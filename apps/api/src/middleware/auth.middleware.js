@@ -1,21 +1,34 @@
-const jwt = require("jsonwebtoken");
-const { env } = require("../config/env");
+const {
+  getTokenFromHeader,
+  verifyToken,
+  isTokenBlacklisted,
+} = require("../services/token.service");
 
-function authMiddleware(req, res, next) {
-  const authHeader = req.headers.authorization;
+async function authMiddleware(req, res, next) {
+  const token = getTokenFromHeader(req.headers.authorization);
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (!token) {
     return res.status(401).json({
       success: false,
       message: "Authorization token missing",
     });
   }
 
-  const token = authHeader.split(" ")[1];
-
   try {
-    const decoded = jwt.verify(token, env.JWT_SECRET);
+    const blacklisted = await isTokenBlacklisted(token);
+
+    if (blacklisted) {
+      return res.status(401).json({
+        success: false,
+        message: "Token has been logged out",
+      });
+    }
+
+    const decoded = verifyToken(token);
+
+    req.token = token;
     req.user = decoded;
+
     next();
   } catch {
     return res.status(401).json({
