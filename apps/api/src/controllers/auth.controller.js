@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const { env } = require("../config/env");
 const { prisma } = require("../lib/prisma");
 const { registerSchema, loginSchema } = require("../validators/auth.validator");
+const { blacklistToken } = require("../services/token.service");
 
 async function register(req, res, next) {
   try {
@@ -114,8 +115,23 @@ function getProfile(req, res) {
   });
 }
 
+async function logout(req, res, next) {
+  try {
+    const result = await blacklistToken(req.token);
+
+    return res.json({
+      success: true,
+      message: "Logout successful. Token has been invalidated.",
+      tokenExpiresInSeconds: result.ttl,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   register,
   login,
   getProfile,
+  logout,
 };
