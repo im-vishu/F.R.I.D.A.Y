@@ -4,6 +4,7 @@ from fastapi import APIRouter
 from app.config.settings import settings
 from app.memory.qdrant_client import ensure_memory_collection
 from app.tools.registry import list_tools
+from app.agents.registry import list_agents
 
 router = APIRouter()
 
@@ -28,6 +29,8 @@ def health():
             "memory": qdrant_status,
             "tools": "enabled",
             "tool_count": len(list_tools()),
+            "multi_agent": "enabled",
+            "agent_count": len(list_agents()),
             "streaming": "pending",
         },
         "timestamp": datetime.now(timezone.utc).isoformat(),
