@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Bot, KeyRound, Send, User } from "lucide-react";
+import { Bot, Brain, KeyRound, Send, User, Wrench, Database } from "lucide-react";
 import { sendAIChatMessage } from "../../services/ai-api";
 
 export function AIChatPanel() {
@@ -10,7 +10,7 @@ export function AIChatPanel() {
   const [messages, setMessages] = useState([
     {
       role: "assistant",
-      text: "F.R.I.D.A.Y online. Paste your JWT token, then send a command to the AI orchestrator.",
+      text: "F.R.I.D.A.Y online. Paste JWT token, then send a command.",
     },
   ]);
 
@@ -27,7 +27,7 @@ export function AIChatPanel() {
         ...prev,
         {
           role: "assistant",
-          text: "JWT token missing. Login through the API and paste your token above.",
+          text: "JWT token missing. Paste your token first.",
         },
       ]);
       return;
@@ -53,17 +53,24 @@ export function AIChatPanel() {
         sessionId: "dashboard-chat-session",
         context: {
           source: "dashboard",
-          phase: "4.2",
+          phase: "7.1",
         },
       });
+
+      const result = data?.result;
+      const metadata = result?.metadata;
 
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
           text:
-            data?.result?.response ||
+            result?.response ||
             "F.R.I.D.A.Y received the command, but no response was returned.",
+          selectedAgent: metadata?.selected_agent || result?.agent,
+          agentRole: result?.agent_role,
+          toolUsed: metadata?.tool_executed,
+          memoryCount: metadata?.memory_count,
         },
       ]);
     } catch (error) {
@@ -91,7 +98,7 @@ export function AIChatPanel() {
         <div>
           <h3 className="text-lg font-bold text-white">AI Chat Interface</h3>
           <p className="text-sm text-slate-400">
-            Connected to protected API AI gateway.
+            Memory-aware, tool-aware, and agent-aware AI gateway.
           </p>
         </div>
       </div>
@@ -133,6 +140,40 @@ export function AIChatPanel() {
                 }`}
               >
                 {message.text}
+
+                {!isUser &&
+                  (message.selectedAgent ||
+                    message.toolUsed ||
+                    message.memoryCount !== undefined) && (
+                    <div className="mt-3 flex flex-wrap gap-2 border-t border-slate-700 pt-3 text-xs">
+                      {message.selectedAgent && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-purple-400/10 px-3 py-1 text-purple-300">
+                          <Brain size={12} />
+                          Agent: {message.selectedAgent}
+                        </span>
+                      )}
+
+                      {message.toolUsed && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-400/10 px-3 py-1 text-amber-300">
+                          <Wrench size={12} />
+                          Tool: {message.toolUsed}
+                        </span>
+                      )}
+
+                      {message.memoryCount !== undefined && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-cyan-400/10 px-3 py-1 text-cyan-300">
+                          <Database size={12} />
+                          Memories: {message.memoryCount}
+                        </span>
+                      )}
+
+                      {message.agentRole && (
+                        <span className="w-full rounded-xl bg-slate-900 px-3 py-2 text-slate-400">
+                          {message.agentRole}
+                        </span>
+                      )}
+                    </div>
+                  )}
               </div>
 
               {isUser && (
@@ -151,7 +192,7 @@ export function AIChatPanel() {
             </div>
 
             <div className="rounded-2xl bg-slate-800 px-4 py-3 text-sm text-slate-300">
-              F.R.I.D.A.Y is thinking...
+              F.R.I.D.A.Y is routing through agents...
             </div>
           </div>
         )}
@@ -161,7 +202,7 @@ export function AIChatPanel() {
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Send AI command to F.R.I.D.A.Y..."
+          placeholder='Try: "Review JWT security" or "Plan next phase"'
           className="flex-1 rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400"
         />
 
