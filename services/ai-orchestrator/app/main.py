@@ -6,6 +6,7 @@ from app.routes.health import router as health_router
 from app.routes.orchestrator import router as orchestrator_router
 from app.routes.memory import router as memory_router
 from app.routes.tools import router as tools_router
+from app.routes.agents import router as agents_router
 
 app = FastAPI(
     title=settings.APP_NAME,
@@ -25,6 +26,7 @@ app.include_router(health_router)
 app.include_router(orchestrator_router)
 app.include_router(memory_router)
 app.include_router(tools_router)
+app.include_router(agents_router)
 
 
 @app.get("/")
